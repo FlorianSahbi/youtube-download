@@ -5,7 +5,7 @@ interface ErrorResponse {
   error: string;
 }
 
-export async function GET(req: Request) {
+export async function GET() {
   // const { searchParams } = new URL(req.url);
   // const url = searchParams.get('url');
 
