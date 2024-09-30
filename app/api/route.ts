@@ -7,7 +7,9 @@ interface ErrorResponse {
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const url = searchParams.get('url');
+  // const url = searchParams.get('url');
+
+  const url = "https://www.youtube.com/watch?v=-08VHe0-gks"
 
   if (!url) {
     return NextResponse.json<ErrorResponse>({ error: 'URL manquante' }, { status: 400 });
