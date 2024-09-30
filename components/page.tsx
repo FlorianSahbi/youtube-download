@@ -10,7 +10,7 @@ export default function Home() {
 
     setError('');
 
-    const response = await fetch(`/api?url=${encodeURIComponent(url)}`);
+    const response = await fetch(`https://youtube-download-murex.vercel.app/api?url=${encodeURIComponent(url)}`);
 
     if (response.ok) {
       const blob = await response.blob();
@@ -40,7 +40,7 @@ export default function Home() {
         style={{ padding: '10px', width: '400px' }}
       />
       <button onClick={handleDownload}>
-        Telecharger
+        Telecharge
       </button>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
