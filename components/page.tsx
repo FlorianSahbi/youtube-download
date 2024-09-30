@@ -23,8 +23,9 @@ export default function Home() {
       a.remove();
       window.URL.revokeObjectURL(downloadUrl);
     } else {
-      const errorData = await response.json();
-      setError(errorData.error || 'Erreur lors du téléchargement de l\'audio');
+      // const errorData = await response.json();
+      console.log('Error')
+      // setError(errorData.error || `Erreur lors du téléchargement de l'audio`);
     }
   };
 
@@ -39,7 +40,7 @@ export default function Home() {
         style={{ padding: '10px', width: '400px' }}
       />
       <button onClick={handleDownload}>
-        Télécharger l'audio
+        Telecharger
       </button>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
