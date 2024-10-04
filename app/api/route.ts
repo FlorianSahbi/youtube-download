@@ -34,18 +34,10 @@ export async function GET(req: Request) {
     )
 
     const audioFormat = ytdl.chooseFormat(info.formats,
-      { filter: 'audioonly', quality: 'highestaudio' }
+      { filter: format => format.container === 'mp4', quality: 'highestaudio' }
     )
 
-    let mimeType = 'audio/mpeg'
-    if (audioFormat.container === 'webm') {
-      mimeType = 'audio/webm'
-    } else if (audioFormat.container === 'mp4') {
-      mimeType = 'audio/mp4'
-      //@ts-expect-error C'est ok
-    } else if (audioFormat.container === 'ogg') {
-      mimeType = 'audio/ogg'
-    }
+
 
     const filename = `${info.videoDetails.title}.${audioFormat.container}`
 
@@ -55,7 +47,7 @@ export async function GET(req: Request) {
     )
 
     response.headers.set('Content-Disposition', `attachment filename="${filename}"`)
-    response.headers.set('Content-Type', mimeType)
+    response.headers.set('Content-Type', 'audio/mp4')
 
     const audioStream = ytdl(url,
       { format: audioFormat, agent }

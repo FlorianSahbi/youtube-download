@@ -18,6 +18,8 @@ export async function GET(req: Request) {
 
   const url = searchParams.get('url')
 
+  const agent = ytdl.createProxyAgent({ uri: "http://178.48.68.61:18080" })
+
   if (!url) {
     return NextResponse.json<ErrorResponse>(
       { error: 'URL manquante' },
@@ -35,21 +37,7 @@ export async function GET(req: Request) {
       )
     }
 
-    const info = await ytdl.getInfo(url)
-
-    const audioFormat = ytdl.chooseFormat(info.formats, {
-      filter: 'audioonly', quality: 'highestaudio'
-    })
-
-    let mimeType = 'audio/mpeg'
-    if (audioFormat.container === 'webm') {
-      mimeType = 'audio/webm'
-    } else if (audioFormat.container === 'mp4') {
-      mimeType = 'audio/mp4'
-      //@ts-expect-error C'est ok
-    } else if (audioFormat.container === 'ogg') {
-      mimeType = 'audio/ogg'
-    }
+    const info = await ytdl.getInfo(url, { agent })
 
     // Retourne les informations sur la vidéo
     const videoInfo: VideoInfoResponse = {
@@ -57,7 +45,7 @@ export async function GET(req: Request) {
       author: info.videoDetails.author.name,
       duration: `${info.videoDetails.lengthSeconds} seconds`,
       thumbnail: info.videoDetails.thumbnails[0].url,
-      mimeType
+      mimeType: 'audio/mp4'
     }
 
     return NextResponse.json(videoInfo, { status: 200 })
