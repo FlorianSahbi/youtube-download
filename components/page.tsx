@@ -30,18 +30,26 @@ export default function Home() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>YouTube Audio Downloader</h1>
-      <input
-        type="text"
-        placeholder="Enter YouTube URL"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        style={{ padding: '10px', width: '400px' }}
-      />
-      <button onClick={handleDownload}>
-        Telecharge
-      </button>
+    <div style={{ padding: '20px', border: "3px solid lightgray" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}>
+
+        <h1>YouTube Audio Downloader</h1>
+
+        <input
+          type="text"
+          placeholder="Enter YouTube URL"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          style={{ padding: '10px', width: '100%' }}
+        />
+
+        <button
+          onClick={handleDownload}
+          style={{ padding: '10px', width: '100%' }}
+        >
+          Telecharge
+        </button>
+      </div>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
