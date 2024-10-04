@@ -5,12 +5,18 @@ interface ErrorResponse {
   error: string
 }
 
+interface VideoInfoResponse {
+  title: string
+  author: string
+  duration: string
+  thumbnail: string
+  mimeType: string
+}
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
 
   const url = searchParams.get('url')
-
-  const agent = ytdl.createProxyAgent({ uri: "http://178.48.68.61:18080" })
 
   if (!url) {
     return NextResponse.json<ErrorResponse>(
@@ -29,13 +35,11 @@ export async function GET(req: Request) {
       )
     }
 
-    const info = await ytdl.getInfo(url,
-      { agent }
-    )
+    const info = await ytdl.getInfo(url)
 
-    const audioFormat = ytdl.chooseFormat(info.formats,
-      { filter: 'audioonly', quality: 'highestaudio' }
-    )
+    const audioFormat = ytdl.chooseFormat(info.formats, {
+      filter: 'audioonly', quality: 'highestaudio'
+    })
 
     let mimeType = 'audio/mpeg'
     if (audioFormat.container === 'webm') {
@@ -47,28 +51,20 @@ export async function GET(req: Request) {
       mimeType = 'audio/ogg'
     }
 
-    const filename = `${info.videoDetails.title}.${audioFormat.container}`
+    // Retourne les informations sur la vidéo
+    const videoInfo: VideoInfoResponse = {
+      title: info.videoDetails.title,
+      author: info.videoDetails.author.name,
+      duration: `${info.videoDetails.lengthSeconds} seconds`,
+      thumbnail: info.videoDetails.thumbnails[0].url,
+      mimeType
+    }
 
-    const response = NextResponse.json(
-      { error: 'Stream audio' },
-      { status: 200 }
-    )
-
-    response.headers.set('Content-Disposition', `attachment filename="${filename}"`)
-    response.headers.set('Content-Type', mimeType)
-
-    const audioStream = ytdl(url,
-      { format: audioFormat, agent }
-    )
-
-    //@ts-expect-error C'est ok
-    return new Response(audioStream, {
-      headers: response.headers,
-    })
+    return NextResponse.json(videoInfo, { status: 200 })
 
   } catch (error) {
     return NextResponse.json<ErrorResponse>(
-      { error: `Erreur lors du téléchargement de la vidéo: ${error}` },
+      { error: `Erreur lors de la récupération des informations: ${error}` },
       { status: 500 }
     )
   }
